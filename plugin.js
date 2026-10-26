@@ -1,8 +1,8 @@
+
 // Plugin: Cinema+ for Kino
 // Fuente: https://www.enmcine.uk
 
 async function home() {
-  // 1. Siempre el await primero
   const res = await kino.fetch("https://www.enmcine.uk/");
   
   if (!res.ok) {
@@ -12,32 +12,28 @@ async function home() {
   const html = res.text;
   const items = [];
 
-  // 2. Ejemplo de cómo extraer elementos del HTML usando una expresión regular sencilla
-  // (Esto busca enlaces de películas típicos en páginas de cine)
-  const regex = /<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g;
+  // Expresión regular para capturar enlaces y títulos de películas
+  const regex = /<a href="([^"]+)"[^>]*title="([^"]+)"[^>]*>/g;
   let match;
 
   while ((match = regex.exec(html)) !== null && items.length < 20) {
     const link = match[1];
-    // Filtramos para asegurarnos de que sean enlaces de películas/series de la misma página
-    if (link.includes("enmcine.uk") && !link.includes("#") && items.length < 20) {
-      // Evitamos duplicados
-      if (!items.some(i => i.ref === link)) {
-        items.push({
-          title: "Película / Serie", // Título por defecto si no se extrae fino
-          ref: link,
-          poster: "", // Aquí iría la URL de la imagen si se extrae
-          kind: "movie",
-          year: 2026
-        });
-      }
+    const title = match[2];
+
+    if (link.includes("enmcine.uk") && !items.some(i => i.ref === link)) {
+      items.push({
+        title: title || "Película",
+        ref: link,
+        kind: "movie",
+        year: 2026
+      });
     }
   }
 
   return {
     rows: [
       {
-        title: "Películas y Estrenos",
+        title: "Películas Recientes",
         genre: "peliculas",
         items: items
       }
@@ -46,7 +42,6 @@ async function home() {
 }
 
 async function search(query) {
-  // 1. Siempre el await primero
   const encodedQuery = encodeURIComponent(query);
   const res = await kino.fetch(`https://www.enmcine.uk/?s=${encodedQuery}`);
 
@@ -56,18 +51,17 @@ async function search(query) {
 
   const html = res.text;
   const items = [];
-
-  // Búsqueda básica de resultados
-  const regex = /<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g;
+  const regex = /<a href="([^"]+)"[^>]*title="([^"]+)"[^>]*>/g;
   let match;
 
   while ((match = regex.exec(html)) !== null && items.length < 20) {
     const link = match[1];
+    const title = match[2];
+
     if (link.includes("enmcine.uk") && !items.some(i => i.ref === link)) {
       items.push({
-        title: query, // Título basado en la búsqueda o extraído
+        title: title || query,
         ref: link,
-        poster: "",
         kind: "movie"
       });
     }
@@ -77,7 +71,6 @@ async function search(query) {
 }
 
 async function resolve(ref) {
-  // 1. Siempre el await primero para entrar a la página del detalle de la película
   const res = await kino.fetch(ref);
 
   if (!res.ok) {
@@ -86,13 +79,12 @@ async function resolve(ref) {
 
   const html = res.text;
 
-  // Aquí buscaríamos la URL directa del video (por ejemplo, un enlace .mp4 o m3u8)
-  // Si la página usa reproductores externos o iframes, la lógica varía según el sitio.
-  // Como ejemplo base, devolvemos el enlace o un error si no se encuentra el video directo:
-  
-  // Si encuentras una URL de video directa, la pones aquí:
-  // return { url: "https://url-directa-del-video.mp4" };
+  // Buscamos si hay un enlace de video directo o un iframe incrustado
+  const iframeMatch = html.match(/src="(https?:\/\/[^"]+embed[^"]*)"/);
+  if (iframeMatch) {
+    return { url: iframeMatch[1] };
+  }
 
+  // Si no se encuentra un flujo directo, indicamos que no se pudo resolver
   throw new Error("not_found");
 }
-
