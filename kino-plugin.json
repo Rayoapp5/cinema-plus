@@ -1,4 +1,3 @@
-
 {
   "id": "cinema-plus",
   "name": "Cinema+",
@@ -10,10 +9,5 @@
   "hosts": [
     "enmcine.uk",
     "*.enmcine.uk"
-  ],
-  "capabilities": [
-    "catalog",
-    "search",
-    "resolve"
   ]
 }
