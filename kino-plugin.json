@@ -1,0 +1,12 @@
+{
+  "id": "lo-mas-visto",
+  "name": "Lo más visto",
+  "version": "0.1.0",
+  "apiVersion": 1,
+  "entry": "plugin.js",
+  "description": "Las series más vistas del momento, actualizadas cada vez que Kino refresca el inicio",
+  "author": "Rayoapp5",
+  "hosts": ["api.tvmaze.com"],
+  "capabilities": ["search", "home", "episodes", "resolve"],
+  "color": "#E5484D"
+}
