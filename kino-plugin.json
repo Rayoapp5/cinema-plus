@@ -1,0 +1,13 @@
+{
+  "id": "cinema-plus",
+  "name": "Cinema+",
+  "description": "Películas y series en español",
+  "version": "1.0.4",
+  "apiVersion": 4,
+  "entry": "plugin.js",
+  "icon": "icon.png",
+  "hosts": [
+    "enmcine.uk",
+    "*.enmcine.uk"
+  ]
+}
