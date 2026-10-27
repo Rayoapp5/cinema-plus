@@ -1,3 +1,4 @@
+on
 {
   "id": "cinema-plus",
   "name": "Cinema+",
@@ -9,13 +10,10 @@
   "hosts": [
     "enmcine.uk",
     "*.enmcine.uk"
+  ],
+  "capabilities": [
+    "search",
+    "home",
+    "resolve"
   ]
 }
-
-"capabilities": [
-  "search",
-  "home",
-  "browse",
-  "episodes",
-  "resolve"
-]
