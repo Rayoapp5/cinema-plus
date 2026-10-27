@@ -1,19 +1,11 @@
-
 {
   "id": "cinema-plus",
   "name": "Cinema+",
-  "description": "Películas y series en español",
+  "author": "Rayoapp5",
   "version": "1.0.4",
-  "apiVersion": 4,
-  "entry": "plugin.js",
-  "icon": "icon.png",
-  "hosts": [
-    "enmcine.uk",
-    "*.enmcine.uk"
-  ],
-  "capabilities": [
-    "search",
-    "home",
-    "resolve"
-  ]
+  "icon": "https://www.enmcine.uk/favicon.ico",
+  "url": "https://www.enmcine.uk",
+  "language": "es",
+  "type": ["movie", "series"],
+  "main": "https://raw.githubusercontent.com/Rayoapp5/pelisnow/main/plugin.js"
 }
