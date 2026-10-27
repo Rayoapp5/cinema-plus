@@ -11,3 +11,11 @@
     "*.enmcine.uk"
   ]
 }
+
+"capabilities": [
+  "search",
+  "home",
+  "browse",
+  "episodes",
+  "resolve"
+]
