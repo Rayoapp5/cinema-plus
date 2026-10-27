@@ -10,18 +10,18 @@ export async function home() {
   const html = await res.text();
   const items = [];
 
-  // Busca: <a href="#/ver/titulo"> <img src="..."> <h3>Titulo</h3>
   const regex = /<a href="(#\/ver\/[^"]+)"[\s\S]*?<img[^>]*src="([^"]+)"[\s\S]*?<h3[^>]*>([^<]+)<\/h3>/g;
   let match;
 
   while ((match = regex.exec(html)) !== null && items.length < 24) {
+    const link = BASE + match[1];
     let poster = match[2];
     if (poster.startsWith("//")) poster = "https:" + poster;
     
     items.push({
       title: match[3].trim(),
       poster: poster,
-      ref: BASE + match[1],
+      ref: link,
       kind: "movie"
     });
   }
@@ -48,13 +48,14 @@ export async function search(query) {
   let match;
 
   while ((match = regex.exec(html)) !== null && items.length < 24) {
+    const link = BASE + match[1];
     let poster = match[2];
     if (poster.startsWith("//")) poster = "https:" + poster;
     
     items.push({
       title: match[3].trim(),
       poster: poster,
-      ref: BASE + match[1],
+      ref: link,
       kind: "movie"
     });
   }
@@ -68,5 +69,17 @@ export async function resolve(ref) {
 
   const html = await res.text();
 
-  // 1. Busca iframes
-  const iframeMatch
+  const iframeMatch = html.match(/<iframe[^>]*src=["']([^"']+)["']/i);
+  if (iframeMatch) {
+    let url = iframeMatch[1];
+    if (url.startsWith("//")) url = "https:" + url;
+    return { url: url };
+  }
+
+  const videoMatch = html.match(/src=["'](https?:\/\/[^"']+\.(mp4|m3u8)[^"']*)["']/i);
+  if (videoMatch) {
+    return { url: videoMatch[1] };
+  }
+
+  throw kino.error("not_found");
+}
